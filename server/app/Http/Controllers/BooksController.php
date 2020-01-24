@@ -7,14 +7,12 @@ use Illuminate\Http\Request;
 
 class BooksController extends Controller
 {
+    /**
+     * POSTリクエストで受け取った値を保存
+     */
     public function store()
     {
-        $data = request()->validate([
-            'title' => 'required',
-            'author' => 'required',
-        ]);
-
-        Book::create($data);
+        Book::create($this->validateRequest());
     }
 
     /**
@@ -23,11 +21,18 @@ class BooksController extends Controller
      */
     public function update(Book $book)
     {
-        $data = request()->validate([
+        $book->update($this->validateRequest());
+    }
+
+    /**
+     * POSTリクエストで受け取った値をバリデーション
+     * @return array
+     */
+    public function validateRequest()
+    {
+        return request()->validate([
             'title' => 'required',
             'author' => 'required',
         ]);
-
-        $book->update($data);
     }
 }
