@@ -36,4 +36,41 @@ class BookReservationTestTest extends TestCase
         $response->assertSessionHasErrors('title');
     }
 
+    /** @test */
+    public function a_author_is_required()
+    {
+        $response = $this->post('/books', [
+            'title' => 'Cool Book Title',
+            'author' => '',
+        ]);
+
+        $response->assertSessionHasErrors('author');
+    }
+
+    /** @test */
+    public function a_book_can_be_updated()
+    {
+        $this->withoutExceptionHandling();
+
+        // 初期データをPOST
+        $this->post('/books', [
+            'title' => 'Cool Book Title',
+            'author' => 'Yuta',
+        ]);
+
+        // DB内の一番最初のデータを変数に代入
+        $book = Book::first();
+
+        // /book+id/に上書きしたデータをPATCH
+        $response = $this->patch('/books/' . $book->id, [
+            'title' => 'New Title',
+            'author' => 'Pomu',
+        ]);
+
+        // DB内のtitleとauthorが第一引数のそれと等しいことを確認
+        $this->assertEquals('New Title', Book::first()->title);
+        $this->assertEquals('Pomu', Book::first()->author);
+    }
+
+
 }

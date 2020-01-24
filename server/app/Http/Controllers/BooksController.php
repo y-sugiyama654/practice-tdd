@@ -11,9 +11,23 @@ class BooksController extends Controller
     {
         $data = request()->validate([
             'title' => 'required',
-            'author' => '',
+            'author' => 'required',
         ]);
 
         Book::create($data);
+    }
+
+    /**
+     * 引数で受け取った値を上書きする
+     * @param Book $book
+     */
+    public function update(Book $book)
+    {
+        $data = request()->validate([
+            'title' => 'required',
+            'author' => 'required',
+        ]);
+
+        $book->update($data);
     }
 }
