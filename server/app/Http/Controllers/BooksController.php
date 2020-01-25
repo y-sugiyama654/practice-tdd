@@ -25,10 +25,21 @@ class BooksController extends Controller
     }
 
     /**
+     * DELETEリクエストで値を削除してリダイレクト
+     * @param Book $book
+     */
+    public function destroy(Book $book)
+    {
+        $book->delete();
+
+        return redirect('/books');
+    }
+
+    /**
      * POSTリクエストで受け取った値をバリデーション
      * @return array
      */
-    public function validateRequest()
+    protected function validateRequest()
     {
         return request()->validate([
             'title' => 'required',
