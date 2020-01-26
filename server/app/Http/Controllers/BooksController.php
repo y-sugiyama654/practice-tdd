@@ -12,7 +12,9 @@ class BooksController extends Controller
      */
     public function store()
     {
-        Book::create($this->validateRequest());
+        $book = Book::create($this->validateRequest());
+
+        return redirect($book->path());
     }
 
     /**
@@ -22,13 +24,26 @@ class BooksController extends Controller
     public function update(Book $book)
     {
         $book->update($this->validateRequest());
+
+        return redirect($book->path());
+    }
+
+    /**
+     * DELETEリクエストで値を削除してリダイレクト
+     * @param Book $book
+     */
+    public function destroy(Book $book)
+    {
+        $book->delete();
+
+        return redirect('/books');
     }
 
     /**
      * POSTリクエストで受け取った値をバリデーション
      * @return array
      */
-    public function validateRequest()
+    protected function validateRequest()
     {
         return request()->validate([
             'title' => 'required',

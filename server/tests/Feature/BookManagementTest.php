@@ -14,15 +14,16 @@ class BookReservationTestTest extends TestCase
     /** @test */
     public function a_book_can_be_added_to_the_library()
     {
-        $this->withoutExceptionHandling();
         $response = $this->post('/books', [
            'title' => 'Cool Book Title',
            'author' => 'Yuta',
         ]);
 
-        // responseが200のステータスコードを持っている
-        $response->assertOk();
+        $book = Book::first();
+
+
         $this->assertCount(1, Book::all());
+        $response->assertRedirect($book->path());
     }
 
     /** @test */
@@ -50,8 +51,6 @@ class BookReservationTestTest extends TestCase
     /** @test */
     public function a_book_can_be_updated()
     {
-        $this->withoutExceptionHandling();
-
         // 初期データをPOST
         $this->post('/books', [
             'title' => 'Cool Book Title',
@@ -62,7 +61,7 @@ class BookReservationTestTest extends TestCase
         $book = Book::first();
 
         // /book+id/に上書きしたデータをPATCH
-        $response = $this->patch('/books/' . $book->id, [
+        $response = $this->patch($book->path(), [
             'title' => 'New Title',
             'author' => 'Pomu',
         ]);
@@ -70,7 +69,26 @@ class BookReservationTestTest extends TestCase
         // DB内のtitleとauthorが第一引数のそれと等しいことを確認
         $this->assertEquals('New Title', Book::first()->title);
         $this->assertEquals('Pomu', Book::first()->author);
+        $response->assertRedirect($book->fresh()->path());
     }
 
+    /** @test */
+    public function a_book_can_be_deleted()
+    {
+        // 初期データをPOST
+        $this->post('/books', [
+            'title' => 'Cool Book Title',
+            'author' => 'Yuta',
+        ]);
 
+        // DB内の一番最初のデータを変数に代入
+        $book = Book::first();
+        $this->assertCount(1, Book::all());
+
+        // /book+id/に上書きしたデータをDELETE
+        $response = $this->delete($book->path());
+
+        $this->assertCount(0, Book::all());
+        $response->assertRedirect('/books');
+    }
 }
