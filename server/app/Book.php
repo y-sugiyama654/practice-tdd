@@ -14,6 +14,15 @@ class Book extends Model
         return '/books/' . $this->id;
     }
 
+    public function checkout(User $user)
+    {
+        $this->reservations()->create([
+            'user_id' => $user->id,
+            'checked_out_at' => now(),
+        ]);
+
+    }
+
     /**
      * Author.idをauthor_idに設定
      * @param $author
@@ -23,5 +32,10 @@ class Book extends Model
         $this->attributes['author_id'] = (Author::firstOrCreate([
             'name' => $author
         ]))->id;
+    }
+
+    public function reservations()
+    {
+        return $this->hasMany(Reservation::class);
     }
 }
