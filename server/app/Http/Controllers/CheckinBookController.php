@@ -7,8 +7,17 @@ use Illuminate\Http\Request;
 
 class CheckinBookController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function store(Book $book)
     {
-        $book->checkin(auth()->user());
+        try {
+            $book->checkin(auth()->user());
+        } catch (\Exception $e) {
+            return response([], 404);
+        }
     }
 }
