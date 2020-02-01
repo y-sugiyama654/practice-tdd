@@ -5,8 +5,13 @@ namespace App\Http\Controllers;
 use App\Author;
 use Illuminate\Http\Request;
 
-class AuthorController extends Controller
+class AuthorsController extends Controller
 {
+    public function create()
+    {
+        return view('authors.create');
+    }
+
     /**
      * POSTリクエストで受け取った値を保存
      */
