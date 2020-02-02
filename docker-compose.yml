@@ -40,4 +40,4 @@ services:
     tty: true
     volumes:
       - ./server:/var/www
-    working_dir: /work
+    working_dir: /var/www
